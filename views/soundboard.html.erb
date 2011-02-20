@@ -76,6 +76,9 @@ function success(position) {
 function update(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
+  
+  document.getElementById('sound-1').play();
+  
   marker.setPosition(latlng);
   map.setCenter(latlng);
   for (i in soundboard) {
