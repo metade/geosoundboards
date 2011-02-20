@@ -18,7 +18,7 @@
   </article>
 </section>
 
-<script>
+<script type="text/javascript">
 var map;
 var marker;
 var soundboard = <%= @soundboard.to_json %>;
@@ -42,7 +42,7 @@ function success(position) {
   
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   var myOptions = {
-    zoom: 15,
+    zoom: 16,
     center: latlng,
     mapTypeControl: false,
     navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
@@ -57,9 +57,9 @@ function success(position) {
     title:"You are here!"
   });
   
-  // google.maps.event.addListener(marker, 'dblclick', function() {
-  //   marker.setPosition(randomPoint(marker.position));
-  // });
+  google.maps.event.addListener(marker, 'mouseup', function() {
+    update({'coords': { 'latitude': marker.position.lat(), 'longitude': marker.position.lng() }});
+  });
   
   for (i in soundboard) {
     var sound = soundboard[i];
@@ -77,22 +77,25 @@ function update(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
   marker.setPosition(latlng);
+  map.setCenter(latlng);
   for (i in soundboard) {
     var sound = soundboard[i];
     var distance = haversine(marker.position, sound.marker.position);
     if (distance < 0.02) {
-      document.getElementById('sound-'+i).play();
+      if (!sound.played) {
+        sound.played = true;
+        sound.marker.setIcon('http://maps.google.com/mapfiles/ms/micons/purple.png');
+        document.getElementById('sound-'+i).play();
+      }
     }
   }
 }
 
 function randomPoint(p) {
-  var lat = p.lat() + (-0.005 + Math.random() / 100.0);
-  var lon = p.lng() + (-0.005 + Math.random() / 100.0);
-  var point = new google.maps.LatLng(lat,lon);
-  return point;
+  var lat = p.lat() + (-0.0025 + Math.random() / 200.0);
+  var lon = p.lng() + (-0.0025 + Math.random() / 200.0);
+  return new google.maps.LatLng(lat,lon);
 }
-
 
 // from: http://www.movable-type.co.uk/scripts/latlong.html
 if (typeof(Number.prototype.toRad) === "undefined") {
@@ -118,14 +121,21 @@ function error(msg) {
   s.className = 'fail';
 }
 
+<% if request.host == 'localhost' %>
+success({'coords': { 'latitude': 51.54634890444444, 'longitude': -0.038198593333333336 }});
+update({'coords': { 'latitude': 51.545, 'longitude': -0.0382 }});
+<% else %>
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(success, error);
-  navigator.geolocation.watchPosition(update, error, {enableHighAccuracy:true, maximumAge:30000, timeout:27000});
+  navigator.geolocation.watchPosition(update, error, {
+    enableHighAccuracy:true, 
+    maximumAge:30000, 
+    timeout:27000
+  });
 } else {
   error('not supported');
 }
-// success({'coords': { 'latitude': 51.54634890444444, 'longitude': -0.038198593333333336 }});
-// update({'coords': { 'latitude': 51.545, 'longitude': -0.0382 }});
+<% end %>
 
 </script>
 
