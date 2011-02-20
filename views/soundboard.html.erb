@@ -120,7 +120,7 @@ function error(msg) {
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(success, error);
-  navigator.geolocation.watchPosition(update, error);
+  navigator.geolocation.watchPosition(update, error, {enableHighAccuracy:true, maximumAge:30000, timeout:27000});
 } else {
   error('not supported');
 }
