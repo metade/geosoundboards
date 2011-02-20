@@ -116,9 +116,7 @@ function error(msg) {
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(success, error);
-  navigator.geolocation.watchPosition(function(position) {
-    update(position);
-  });
+  navigator.geolocation.watchPosition(update, error);
 } else {
   error('not supported');
 }
