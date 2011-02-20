@@ -79,13 +79,12 @@ function update(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   // console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
   
-  var test = document.getElementById('sound-1');
-  if (test) {
-    console.log(test);
-    test.play();
-    // var s = document.querySelector('#player-status');
-    // s.innerHTML = "" + test.buffered;
-  }
+  // var test = document.getElementById('sound-1');
+  // if (test) {
+  //   console.log(test.play());
+  //   // var s = document.querySelector('#player-status');
+  //   // s.innerHTML = "" + test.buffered;
+  // }
   
   marker.setPosition(latlng);
   map.setCenter(latlng);
