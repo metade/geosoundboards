@@ -18,6 +18,8 @@
   </article>
 </section>
 
+<span id="player-status">...</span>
+
 <script type="text/javascript">
 var map;
 var marker;
@@ -75,9 +77,15 @@ function success(position) {
 
 function update(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
+  // console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
   
-  document.getElementById('sound-1').play();
+  var test = document.getElementById('sound-1');
+  if (test) {
+    console.log(test);
+    test.play();
+    // var s = document.querySelector('#player-status');
+    // s.innerHTML = "" + test.buffered;
+  }
   
   marker.setPosition(latlng);
   map.setCenter(latlng);
