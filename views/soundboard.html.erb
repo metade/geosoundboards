@@ -57,9 +57,13 @@ function success(position) {
     title:"You are here!"
   });
   
+  // google.maps.event.addListener(marker, 'dblclick', function() {
+  //   marker.setPosition(randomPoint(marker.position));
+  // });
+  
   for (i in soundboard) {
     var sound = soundboard[i];
-    var point = randomPoint(position);
+    var point = randomPoint(latlng);
     sound.marker = new google.maps.Marker({ 
       position: point,
       map: map, 
@@ -72,7 +76,7 @@ function success(position) {
 function update(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
-  marker.position = latlng;
+  marker.setPosition(latlng);
   for (i in soundboard) {
     var sound = soundboard[i];
     var distance = haversine(marker.position, sound.marker.position);
@@ -83,12 +87,12 @@ function update(position) {
 }
 
 function randomPoint(p) {
-  var d = (-0.005 + Math.random() / 100.0);
-  var lat = p.coords.latitude + (-0.005 + Math.random() / 100.0);
-  var lon = p.coords.longitude + (-0.005 + Math.random() / 100.0);
+  var lat = p.lat() + (-0.005 + Math.random() / 100.0);
+  var lon = p.lng() + (-0.005 + Math.random() / 100.0);
   var point = new google.maps.LatLng(lat,lon);
   return point;
 }
+
 
 // from: http://www.movable-type.co.uk/scripts/latlong.html
 if (typeof(Number.prototype.toRad) === "undefined") {
@@ -121,7 +125,7 @@ if (navigator.geolocation) {
   error('not supported');
 }
 // success({'coords': { 'latitude': 51.54634890444444, 'longitude': -0.038198593333333336 }});
-// update({'coords': { 'latitude': 51.54634890444444, 'longitude': -0.038198593333333336 }});
+// update({'coords': { 'latitude': 51.545, 'longitude': -0.0382 }});
 
 </script>
 
