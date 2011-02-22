@@ -63,6 +63,19 @@ function success(position) {
     update({'coords': { 'latitude': marker.position.lat(), 'longitude': marker.position.lng() }});
   });
   
+  // $.ajax({
+  //   url: "https://graph.facebook.com/search",
+  //   data: ({ 
+  //     type: "place",
+  //     access_token: "<%= @fb_access_token %>",
+  //     center: latlng.lat()+','+latlng.lng(),
+  //     distance: 1000
+  //   }),
+  //   success: function(data) {
+  //     console.log(data);
+  //   }
+  // });
+  
   for (i in soundboard) {
     var sound = soundboard[i];
     var point = randomPoint(latlng);
@@ -146,11 +159,10 @@ if (navigator.geolocation) {
   error('not supported');
 }
 <% end %>
-
 </script>
 
 <% @soundboard.each_with_index do |sound,i| %>
-<audio id="sound-<%= i %>" src="http://www.bbc.co.uk<%= sound[:path] %>.mp3"></audio>
+<audio id="sound-<%= i %>" src="http://www.bbc.co.uk<%= sound[:path] %>.mp3" preload="auto"></audio>
 <% end %>
 
 </body>
