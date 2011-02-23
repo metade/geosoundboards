@@ -63,19 +63,11 @@ function success(position) {
     update({'coords': { 'latitude': marker.position.lat(), 'longitude': marker.position.lng() }});
   });
   
-  // $.ajax({
-  //   url: "https://graph.facebook.com/search",
-  //   data: ({ 
-  //     type: "place",
-  //     access_token: "<%= @fb_access_token %>",
-  //     center: latlng.lat()+','+latlng.lng(),
-  //     distance: 1000
-  //   }),
-  //   success: function(data) {
-  //     console.log(data);
-  //   }
-  // });
-  
+  setupRandomSounds(latlng);
+  // setupFacebookPlacesSounds(latlng);
+}
+
+function setupRandomSounds(latlng) {
   for (i in soundboard) {
     var sound = soundboard[i];
     var point = randomPoint(latlng);
@@ -86,6 +78,29 @@ function success(position) {
       icon:'http://maps.google.com/mapfiles/ms/micons/orange.png',
     });
   }
+}
+
+function setupFacebookPlacesSounds(latlng) {
+  var params = 'type=place&center='+latlng.lat()+','+latlng.lng()+'&distance=1000&access_token=<%= @fb_access_token %>'
+  $.getJSON("https://graph.facebook.com/search?callback=?&"+params,
+    function(json) {
+      places = json.data;
+      for (i in soundboard) {
+        var sound = soundboard[i];
+        if (places[i]) {
+          var point = new google.maps.LatLng(places[i].location.latitude,places[i].location.longitude);
+        } else {
+          var point = randomPoint(latlng);
+        }
+        sound.marker = new google.maps.Marker({ 
+          position: point,
+          map: map, 
+          title: sound.title,
+          icon:'http://maps.google.com/mapfiles/ms/micons/orange.png',
+        });
+      }
+    }
+  );
 }
 
 function update(position) {
