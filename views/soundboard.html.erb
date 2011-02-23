@@ -5,20 +5,23 @@
   <meta name="viewport" content="width=620" />
   <title>GeoSoundboards <%= @title %></title>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.5.min.js"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <style type="text/css">
+    #mapcanvas { height: 400px; width: 560px;}
+    h1 span { color: #444; }
+  </style>
 </head>
 <body>
 <section id="wrapper">
   <header>
-    <h1><%= @title %></h1>
+    <h1><%= @title.titleize %> <span>Geo</span>Soundboard</h1>
   </header>
-  
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
   <article>
+    <div id="mapcanvas">
+    </div>
     <p>Finding your location: <span id="status">checking...</span></p>
   </article>
 </section>
-
-<span id="player-status">...</span>
 
 <script type="text/javascript">
 var map;
@@ -34,13 +37,6 @@ function success(position) {
   
   s.innerHTML = "found you!";
   s.className = 'success';
-  
-  var mapcanvas = document.createElement('div');
-  mapcanvas.id = 'mapcanvas';
-  mapcanvas.style.height = '400px';
-  mapcanvas.style.width = '560px';
-    
-  document.querySelector('article').appendChild(mapcanvas);
   
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   var myOptions = {
@@ -107,13 +103,6 @@ function update(position) {
   var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
   // console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
   
-  // var test = document.getElementById('sound-1');
-  // if (test) {
-  //   console.log(test.play());
-  //   // var s = document.querySelector('#player-status');
-  //   // s.innerHTML = "" + test.buffered;
-  // }
-  
   marker.setPosition(latlng);
   map.setCenter(latlng);
   for (i in soundboard) {
@@ -177,7 +166,7 @@ if (navigator.geolocation) {
 </script>
 
 <% @soundboard.each_with_index do |sound,i| %>
-<audio id="sound-<%= i %>" src="http://www.bbc.co.uk<%= sound[:path] %>.mp3" preload="auto"></audio>
+<audio id="sound-<%= i %>" src="http://www.bbc.co.uk<%= sound[:path] %>.mp3"></audio>
 <% end %>
 
 </body>
