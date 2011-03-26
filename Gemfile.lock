@@ -1,0 +1,30 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.0.5)
+    dalli (1.0.3)
+    hpricot (0.8.4)
+    i18n (0.5.0)
+    json (1.5.1)
+    koala (0.10.0)
+      json (>= 1.0)
+    rack (1.2.2)
+    sinatra (1.2.1)
+      rack (~> 1.1)
+      tilt (< 2.0, >= 1.2.2)
+    sinatra-respond_to (0.7.0)
+      sinatra (~> 1.2)
+    tilt (1.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport
+  dalli
+  hpricot
+  i18n
+  json
+  koala
+  sinatra
+  sinatra-respond_to

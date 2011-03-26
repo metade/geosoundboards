@@ -1,0 +1,135 @@
+<div data-role="page"> 
+  <div data-role="header">
+    <h1><%= @title.titleize %> <span>Geo</span>Soundboard</h1>
+  </div> 
+  <div data-role="content">
+    <div id="mapcanvas">
+    </div>
+    <p>Finding your location: <span id="status">checking...</span></p>
+    
+    <ul data-role="listview" data-inset="true">
+      <% @playlist.each_with_index do |sound,i| %>
+      <li id="sound-item-<%= i %>">
+				<a href="#sound-<%= i %>" data-rel="dialog" data-transition="pop" class="sound">
+	        <span><%= sound[:title] %></span>
+	        <audio id="sound-<%= i %>" src="<%= sound[:audio] %>"></audio>
+				</a>
+      </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<div data-role="dialog" id="dialog">
+	<div data-role="header">
+    <h1>Title</h1>
+  </div>
+	<div data-role="content">
+		<img src="http://placekitten.com/300/300" width="300" height="300">
+		<p>Description</p>
+		<div id="play"></div>
+	</div><!-- /content -->
+</div>
+
+<script type="text/javascript" src="/geo.js"></script>
+<script type="text/javascript">
+
+function displaySound(index) {
+	var sound = soundboard[index];
+	$('#dialog h1').html(sound.title);
+	$('#dialog p').html(sound.description);
+	if (sound.unlocked) {
+		link = '<a href="javascript:document.getElementById(\'sound-'+index+'\').play();">Play</a>';
+		$('#dialog #play').html(link);
+	} else {
+		$('#dialog #play').html('');
+	}
+	
+	currentPage = $.mobile.activePage;
+  menuPage = $('#dialog');
+	$.mobile.changePage([currentPage, menuPage], 'pop', false);
+}
+$('a.sound').click(function() {
+	var link = $(this).attr('href');
+	var index = link.substring(7);
+	displaySound(index);
+	return(false);
+});
+
+var map;
+var marker;
+var soundboard = <%= @playlist.to_json %>;
+function success(position) {
+  var s = document.querySelector('#status');
+
+  if (s.className == 'success') {
+    // not sure why we're hitting this twice in FF, I think it's to do with a cached result coming back    
+    return;
+  }
+
+  s.innerHTML = "found you!";
+  s.className = 'success';
+
+  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var myOptions = {
+    zoom: 16,
+    center: latlng,
+    mapTypeControl: false,
+    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+  marker = new google.maps.Marker({ 
+    position: latlng, 
+    map: map,
+    draggable:true,
+    icon:'http://maps.google.com/mapfiles/ms/micons/blue.png',
+    title:"You are here!"
+  });
+
+  google.maps.event.addListener(marker, 'mouseup', function() {
+    update({'coords': { 'latitude': marker.position.lat(), 'longitude': marker.position.lng() }});
+  });
+
+  setupRandomSounds(latlng);
+  // setupFacebookPlacesSounds(latlng);
+}
+
+function update(position) {
+  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  // console.log('updated: ' + latlng.lat() + ' ' + latlng.lng());
+
+  marker.setPosition(latlng);
+  map.setCenter(latlng);
+  for (i in soundboard) {
+    var sound = soundboard[i];
+    var distance = haversine(marker.position, sound.marker.position);
+    if (distance < 0.02) {
+      if (!sound.unlocked) {
+        sound.unlocked = true;
+        sound.marker.setIcon('http://maps.google.com/mapfiles/ms/micons/purple.png');
+        // document.getElementById('sound-'+i).play();
+				displaySound(i);
+      }
+    }
+  }
+}
+
+
+
+<% if request.host == 'localhost' %>
+success({'coords': { 'latitude': 51.516274, 'longitude': -0.085402 }});
+update({'coords': { 'latitude': 51.516274, 'longitude': -0.085402 }});
+<% else %>
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success, error);
+  navigator.geolocation.watchPosition(update, error, {
+    enableHighAccuracy:true, 
+    maximumAge:30000, 
+    timeout:27000
+  });
+} else {
+  error('not supported');
+}
+<% end %>
+</script>

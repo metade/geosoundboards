@@ -6,18 +6,30 @@ require 'open-uri'
 require 'hpricot'
 require 'json'
 require 'koala'
+require 'pp'
 
 require 'active_support/cache'
 require 'active_support/cache/dalli_store'
 
 Sinatra::Application.register Sinatra::RespondTo
 configure do
-  
   if ENV['cache'] == 'dalli'
     CACHE = ActiveSupport::Cache::DalliStore.new
   else
     CACHE = ActiveSupport::Cache::MemoryStore.new
   end
+end
+
+get '/' do
+  erb :index
+end
+
+get '/playlists/:id' do |id|
+  data = playlist(id)
+  @title = data[:title]
+  @playlist = data[:playlist]
+  pp @playlist
+  erb :playlist
 end
 
 get '/soundboards/:id' do |id|
@@ -32,10 +44,36 @@ get '/soundboards/:id' do |id|
   end
 end
 
+def image(src, foo='thumbnail-small')
+  height, width = 64, 64
+  recipe, size = foo.split('-')
+  urlimg = "http://urlimg.com/#{recipe}/#{size}/#{src.sub('http://', '')}"
+  
+  %[<img src="#{urlimg}" height="#{height}" width="#{width}" />]
+end
+
 def fb_access_token
   CACHE.fetch('fb_access_token', :expires_in => 1.hour) do
     @oauth = Koala::Facebook::OAuth.new('142583072471882', '1ba43da65c572e959aba6175c4e1eea9', '')
     @oauth.get_app_access_token
+  end
+end
+
+def playlist(id)
+  url = "http://spreadsheets.google.com/feeds/list/#{id}/1/public/values"
+  CACHE.fetch(url, :expires_in => 2.minutes) do
+    puts "FETCHING #{url}"
+    doc = Hpricot::XML(open(url).read)
+    title = doc.at('//title').inner_html
+    items = (doc/'//entry').map do |e|
+      result = {}
+      e.children.
+        select { |c| !c.kind_of? Hpricot::Text }.
+        each { |c| result[$1.to_sym] = c.inner_html if c.name =~ /gsx:(\w+)/ }
+      result
+    end
+    { :title => title,
+      :playlist => items }
   end
 end
 
