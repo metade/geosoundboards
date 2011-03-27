@@ -1,6 +1,6 @@
 <div data-role="page"> 
   <div data-role="header">
-    <h1><%= @title.titleize %> <span>Geo</span>Soundboard</h1>
+    <h1><%= @title.titleize %></h1>
   </div> 
   <div data-role="content">
     <div id="mapcanvas">
@@ -91,7 +91,7 @@ function success(position) {
     update({'coords': { 'latitude': marker.position.lat(), 'longitude': marker.position.lng() }});
   });
 
-  setupRandomSounds(latlng);
+  setupSounds(latlng);
   // setupFacebookPlacesSounds(latlng);
 }
 

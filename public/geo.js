@@ -1,3 +1,21 @@
+function setupSounds(latlng) {
+  for (i in soundboard) {
+    var sound = soundboard[i];
+		var point;
+		if (sound.latitude && sound.longitude) {
+			point = new google.maps.LatLng(sound.latitude,sound.longitude);
+		} else {
+			point = randomPoint(latlng);
+		}
+    sound.marker = new google.maps.Marker({ 
+      position: point,
+      map: map, 
+      title: sound.title,
+      icon:'http://maps.google.com/mapfiles/ms/micons/orange.png',
+    });
+  }
+}
+
 function setupRandomSounds(latlng) {
   for (i in soundboard) {
     var sound = soundboard[i];
