@@ -25,7 +25,7 @@
     <h1>Title</h1>
   </div>
 	<div data-role="content">
-		<img src="http://placekitten.com/300/300" width="300" height="300">
+		<img src="http://placekitten.com/300/300" width="300" height="300" id="image" />
 		<p>Description</p>
 		<div id="play"></div>
 	</div><!-- /content -->
@@ -37,6 +37,7 @@
 function displaySound(index) {
 	var sound = soundboard[index];
 	$('#dialog h1').html(sound.title);
+	$('#dialog #image').attr("src", sound.image);
 	$('#dialog p').html(sound.description);
 	if (sound.unlocked) {
 		link = '<a href="javascript:document.getElementById(\'sound-'+index+'\').play();">Play</a>';
