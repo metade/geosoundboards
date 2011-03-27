@@ -51,7 +51,7 @@
 function displaySound(index) {
 	var sound = soundboard[index];
 	$('#dialog h1').html(sound.title);
-	$('#dialog #image').attr("src", sound.image);
+	$('#dialog .image').attr("src", sound.image);
 	$('#dialog p').html(sound.description);
 	if (sound.unlocked) {
 		link = '<a href="javascript:document.getElementById(\'sound-'+index+'\').play();" data-icon="arrow-r" data-role="button">Play</a>';
