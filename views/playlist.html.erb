@@ -20,6 +20,7 @@
   </div>
 </div>
 
+<div id="jquery_jplayer_inline"></div> 
 <div data-role="dialog" id="dialog">
 	<div data-role="header">
     <h1>Title</h1>
@@ -27,7 +28,7 @@
 	<div data-role="content">
 		<img src="http://placekitten.com/300/300" id="image" />
 		<p>Description</p>
-		<div id="play"></div>
+		<div id="play"><a class="play" href="#">Play</a></div>
 	</div><!-- /content -->
 </div>
 
@@ -40,11 +41,11 @@ function displaySound(index) {
 	$('#dialog #image').attr("src", sound.image);
 	$('#dialog p').html(sound.description);
 	if (sound.unlocked) {
-		link = '<a href="javascript:document.getElementById(\'sound-'+index+'\').play();" data-icon="arrow-r" data-role="button">Play</a>';
-		$('#dialog #play').html(link);
-		$('#dialog #play a').button();
+    // TODO: SHOW Play button
+    $('.play').attr('href', sound.audio);
+		$('.play').show();
 	} else {
-		$('#dialog #play').html('');
+		$('.play').hide();
 	}
 	
 	currentPage = $.mobile.activePage;
@@ -135,3 +136,4 @@ if (navigator.geolocation) {
 }
 <% end %>
 </script>
+<script type="text/javascript" src="/inline_jplayer.js"></script>
