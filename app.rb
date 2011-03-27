@@ -24,11 +24,17 @@ get '/' do
   erb :index
 end
 
+get '/faqs' do
+  erb :faqs
+end
+
 get '/playlists/:id' do |id|
   data = playlist(id)
+  @id = id
   @title = data[:title]
+  @image = data[:image]
   @playlist = data[:playlist]
-  pp @playlist
+  @description = data[:description]
   erb :playlist
 end
 
@@ -60,20 +66,26 @@ def fb_access_token
 end
 
 def playlist(id)
-  url = "http://spreadsheets.google.com/feeds/list/#{id}/1/public/values"
+  url = "http://spreadsheets.google.com/feeds/list/#{id}"
   CACHE.fetch(url, :expires_in => 2.minutes) do
     puts "FETCHING #{url}"
-    doc = Hpricot::XML(open(url).read)
-    title = doc.at('//title').inner_html
-    items = (doc/'//entry').map do |e|
+    doc = Hpricot::XML(open("#{url}/1/public/values").read)
+    playlist = {}
+    playlist[:title] = doc.at('//title').inner_html
+    playlist[:playlist] = (doc/'//entry').map do |e|
       result = {}
       e.children.
         select { |c| !c.kind_of? Hpricot::Text }.
         each { |c| result[$1.to_sym] = c.inner_html if c.name =~ /gsx:(\w+)/ }
       result
     end
-    { :title => title,
-      :playlist => items }
+    doc = Hpricot::XML(open("#{url}/2/public/values").read)
+    (doc/'//entry').each do |e|
+      property = e.at('gsx:property').inner_html.downcase.to_sym
+      value = e.at('gsx:value').inner_html
+      playlist[property] = value
+    end
+    playlist
   end
 end
 

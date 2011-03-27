@@ -1,6 +1,7 @@
 <div data-role="page"> 
   <div data-role="header">
     <h1><%= @title.titleize %></h1>
+		<% if @description %><a href="#about" data-transition="pop" class="ui-btn-right">About</a><% end %>
   </div> 
   <div data-role="content">
     <div id="mapcanvas">
@@ -21,24 +22,37 @@
 </div>
 
 <div id="jquery_jplayer_inline"></div> 
-<div data-role="dialog" id="dialog">
+<div data-role="dialog" id="dialog" class="dialog">
 	<div data-role="header">
     <h1>Title</h1>
   </div>
 	<div data-role="content">
-		<img src="http://placekitten.com/300/300" id="image" />
+		<img src="http://placekitten.com/300/300" class="image" />
 		<p>Description</p>
 		<div id="play"><a class="play" href="#">Play</a></div>
 	</div><!-- /content -->
 </div>
 
+<% if @description %>
+	<div data-role="dialog" id="about" class="dialog">
+		<div data-role="header">
+	    <h1>About</h1>
+	  </div>
+		<div data-role="content">
+			<% if @image %><img src="<%= @image %>" class="image" /><% end %>
+			<p><%= @description %></p>
+		</div><!-- /content -->
+	</div>
+<% end %>
+
 <script type="text/javascript" src="/geo.js"></script>
+<script type="text/javascript" src="/jquery.cookie.js"></script>
 <script type="text/javascript">
 
 function displaySound(index) {
 	var sound = soundboard[index];
 	$('#dialog h1').html(sound.title);
-	$('#dialog #image').attr("src", sound.image);
+	$('#dialog .image').attr("src", sound.image);
 	$('#dialog p').html(sound.description);
 	if (sound.unlocked) {
     // TODO: SHOW Play button
@@ -59,6 +73,7 @@ $('a.sound').click(function() {
 	return(false);
 });
 
+var playlistId = '<%= @id %>';
 var map;
 var marker;
 var soundboard = <%= @playlist.to_json %>;
@@ -111,14 +126,13 @@ function update(position) {
       if (!sound.unlocked) {
         sound.unlocked = true;
         sound.marker.setIcon('http://maps.google.com/mapfiles/ms/micons/purple.png');
+				$.cookie(playlistId+'-'+i, true);
         // document.getElementById('sound-'+i).play();
 				displaySound(i);
       }
     }
   }
 }
-
-
 
 <% if request.host == 'localhost' %>
 success({'coords': { 'latitude': 51.516274, 'longitude': -0.085402 }});
