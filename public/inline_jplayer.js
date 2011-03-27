@@ -18,7 +18,6 @@ $(document).ready(function(){
   //  
 	// Inline player
 	$(".play").click(function() {   
-	  alert('Play');
 		var self = $(this); 
 		
     if (inlinePlaying){
@@ -26,9 +25,6 @@ $(document).ready(function(){
     }
 		
     var track = $(".play").attr("href");
-    // $(".play").attr("href", '');
-    // var track = "https://s3-eu-west-1.amazonaws.com/radiobox-caffeinated/soho-coffee-bars-1950s.mp3";
-    alert(track);
 		inlinePlayer.jPlayer("setFile", track, '').jPlayer("play");
 		 
     // self.hide();
