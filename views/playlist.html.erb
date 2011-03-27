@@ -1,6 +1,7 @@
 <div data-role="page"> 
   <div data-role="header">
     <h1><%= @title.titleize %></h1>
+		<% if @description %><a href="#about" data-transition="pop" class="ui-btn-right">About</a><% end %>
   </div> 
   <div data-role="content">
     <div id="mapcanvas">
@@ -20,16 +21,28 @@
   </div>
 </div>
 
-<div data-role="dialog" id="dialog">
+<div data-role="dialog" id="dialog" class="dialog">
 	<div data-role="header">
     <h1>Title</h1>
   </div>
 	<div data-role="content">
-		<img src="http://placekitten.com/300/300" id="image" />
+		<img src="http://placekitten.com/300/300" class="image" />
 		<p>Description</p>
 		<div id="play"></div>
 	</div><!-- /content -->
 </div>
+
+<% if @description %>
+	<div data-role="dialog" id="about" class="dialog">
+		<div data-role="header">
+	    <h1>About</h1>
+	  </div>
+		<div data-role="content">
+			<% if @image %><img src="<%= @image %>" class="image" /><% end %>
+			<p><%= @description %></p>
+		</div><!-- /content -->
+	</div>
+<% end %>
 
 <script type="text/javascript" src="/geo.js"></script>
 <script type="text/javascript">

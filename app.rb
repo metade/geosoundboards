@@ -27,8 +27,9 @@ end
 get '/playlists/:id' do |id|
   data = playlist(id)
   @title = data[:title]
+  @image = data[:image]
   @playlist = data[:playlist]
-  pp @playlist
+  @description = data[:description]
   erb :playlist
 end
 
