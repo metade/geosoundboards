@@ -24,6 +24,10 @@ get '/' do
   erb :index
 end
 
+get '/faqs' do
+  erb :faqs
+end
+
 get '/playlists/:id' do |id|
   data = playlist(id)
   @id = id
