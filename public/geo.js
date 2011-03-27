@@ -7,11 +7,19 @@ function setupSounds(latlng) {
 		} else {
 			point = randomPoint(latlng);
 		}
+		
+		var icon;
+		if ($.cookie(playlistId+'-'+i)) {
+			sound.unlocked = true;
+			icon = 'http://maps.google.com/mapfiles/ms/micons/purple.png';
+		} else {
+			icon = 'http://maps.google.com/mapfiles/ms/micons/orange.png';
+		}
     sound.marker = new google.maps.Marker({ 
       position: point,
       map: map, 
       title: sound.title,
-      icon:'http://maps.google.com/mapfiles/ms/micons/orange.png',
+      icon: icon,
     });
   }
 }

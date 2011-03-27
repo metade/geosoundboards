@@ -26,6 +26,7 @@ end
 
 get '/playlists/:id' do |id|
   data = playlist(id)
+  @id = id
   @title = data[:title]
   @image = data[:image]
   @playlist = data[:playlist]
