@@ -1,0 +1,40 @@
+<div id="soundboard">
+  <ul>
+    <% @sounds.each do |sound| %>
+      <li id="sound-<%= sound[:key] %>">
+        <a href="http://www.bbc.co.uk<%= sound[:path] %>.mp3" class="play"><%= sound[:title] %></a>
+      </li>
+    <% end %>
+  </ul>
+  <div id="jquery_jplayer"></div>
+</div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+<script type="text/javascript" src="/jquery.jplayer.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var inlinePlaying = false;
+    var inlinePlayer = $("#jquery_jplayer");
+    
+    inlinePlayer.jPlayer({
+      swfPath: "/swf/Jplayer"
+    });
+    $(".play").click(function() {   
+      var self = $(this); 
+      
+      if (inlinePlaying) {
+        inlinePlayer.jPlayer("pause");
+      }
+      
+      var track = self.attr("href");
+      
+      inlinePlayer.jPlayer("setMedia", {
+          mp3: track,
+      });
+      inlinePlayer.jPlayer("play");
+      inlinePlaying = true;
+      
+      return false;
+    });
+  });
+</script>

@@ -50,6 +50,28 @@ get '/soundboards/:id' do |id|
   end
 end
 
+get '/radio1/soundboards/:id' do |id|
+  @sounds = soundboard(id)
+  soundboard_html = erb(:_radio1, :layout => false)
+  puts soundboard_html
+  
+  
+  url = "http://www.bbc.co.uk/radio1/soundboards/#{id}"
+  html = open(url).read
+  html.gsub!(%[@import '/], %[@import 'http://www.bbc.co.uk/])
+  html.gsub!(%[src="/], %[src="http://www.bbc.co.uk/])
+  html.gsub!(%[config: "/], %[config: "http://www.bbc.co.uk/])
+  
+  doc = Hpricot(html)
+  doc.search('//div[@class="feature"]/script').remove
+  doc.at('//div[@id="soundboard"]').swap(soundboard_html)
+  
+  respond_to do |wants|
+    wants.html { doc.to_s }
+    wants.json { @soundboard.to_json }
+  end
+end
+
 def image(src, foo='thumbnail-small')
   height, width = 64, 64
   recipe, size = foo.split('-')
@@ -90,20 +112,17 @@ def playlist(id)
 end
 
 def soundboard(id)
-  if request.host == 'localhost'
-    [{:path=>"/radio1/developers/soundboard/assets/deployment_bomb", :xpos=>"186", :ypos=>"91", :title=>"Deployment Bomb"}, {:path=>"/radio1/developers/soundboard/assets/hustle", :xpos=>"252", :ypos=>"9", :title=>"Hustle"}, {:path=>"/radio1/developers/soundboard/assets/big", :xpos=>"395", :ypos=>"31", :title=>"Big"}, {:path=>"/radio1/developers/soundboard/assets/heavyhit", :xpos=>"427", :ypos=>"103", :title=>"Heavy Hit"}, {:path=>"/radio1/developers/soundboard/assets/finger", :xpos=>"448", :ypos=>"173", :title=>"Finger"}, {:path=>"/radio1/developers/soundboard/assets/down", :xpos=>"411", :ypos=>"258", :title=>"Goin' Down"}, {:path=>"/radio1/developers/soundboard/assets/up", :xpos=>"375", :ypos=>"320", :title=>"Building"}, {:path=>"/radio1/developers/soundboard/assets/exackly", :xpos=>"242", :ypos=>"331", :title=>"Exackly"}, {:path=>"/radio1/developers/soundboard/assets/klaxon", :xpos=>"115", :ypos=>"259", :title=>"Horn"}, {:path=>"/radio1/developers/soundboard/assets/understand", :xpos=>"35", :ypos=>"210", :title=>"Understand"}, {:path=>"/radio1/developers/soundboard/assets/south", :xpos=>"17", :ypos=>"143", :title=>"South"}, {:path=>"/radio1/developers/soundboard/assets/issues", :xpos=>"58", :ypos=>"80", :title=>"Issues"}, {:path=>"/radio1/developers/soundboard/assets/lets_go", :xpos=>"118", :ypos=>"22", :title=>"Let's go!"}]
-  else
-    url = "http://www.bbc.co.uk/radio1/soundboards/xml/#{id}.xml"
-    CACHE.fetch(url, :expires_in => 2.minutes) do
-      puts "FETCHING #{url}"
-      doc = Hpricot::XML(open(url).read)
-      (doc/'//sound').map do |e|
-        result = {}
-        e.children.
-          select { |c| !c.kind_of? Hpricot::Text }.
-          each { |c| result[c.name.to_sym] = c.inner_html }
-        result
-      end
+  url = "http://www.bbc.co.uk/radio1/soundboards/xml/#{id}.xml"
+  CACHE.fetch(url, :expires_in => 2.minutes) do
+    puts "FETCHING #{url}"
+    doc = Hpricot::XML(open(url).read)
+    (doc/'//sound').map do |e|
+      result = {}
+      e.children.
+        select { |c| !c.kind_of? Hpricot::Text }.
+        each { |c| result[c.name.to_sym] = c.inner_html }
+      result[:key] = result[:path].split('/').last
+      result
     end
   end
 end

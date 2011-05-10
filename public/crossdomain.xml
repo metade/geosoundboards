@@ -1,0 +1,30 @@
+<?xml version="1.0"?><!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+<site-control permitted-cross-domain-policies="master-only"   /> 
+<allow-access-from domain="downloads.bbc.co.uk" /> 
+<allow-access-from domain="www.bbc.co.uk" /> 
+<allow-access-from domain="news.bbc.co.uk" /> 
+<allow-access-from domain="newsimg.bbc.co.uk"/> 
+<allow-access-from domain="nolpreview11.newsonline.tc.nca.bbc.co.uk" /> 
+<allow-access-from domain="newsrss.bbc.co.uk" /> 
+<allow-access-from domain="newsapi.bbc.co.uk" /> 
+<allow-access-from domain="extdev.bbc.co.uk" /> 
+<allow-access-from domain="stats.bbc.co.uk" /> 
+<allow-access-from domain="*.bbc.co.uk" />
+<allow-access-from domain="*.bbc.net.uk" />
+<allow-access-from domain="*.bbc.com" />
+<allow-access-from domain="*.bbcamerica.com" />
+<allow-access-from domain="www.bbcamerica.com" /> 
+<allow-access-from domain="*.bbcimg.co.uk" />
+<allow-access-from domain="node1.bbcimg.co.uk" />
+<allow-access-from domain="node2.bbcimg.co.uk" />
+<allow-access-from domain="node3.bbcimg.co.uk" />
+<allow-access-from domain="node4.bbcimg.co.uk" />
+<allow-access-from domain="news.bbcimg.co.uk" />
+<allow-access-from domain="*.bbci.co.uk" />
+<allow-access-from domain="*.int.bbci.co.uk" />
+<allow-access-from domain="*.test.bbci.co.uk" />
+<allow-access-from domain="*.stage.bbci.co.uk" />
+<allow-access-from domain="*.stable.bbci.co.uk" />
+<allow-access-from domain="*.live.bbci.co.uk" />
+</cross-domain-policy>
