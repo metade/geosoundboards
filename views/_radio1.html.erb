@@ -1,8 +1,18 @@
+<style type="text/css">
+#soundboard ul { height: 400px; }
+#soundboard li { position: relative; }
+#soundboard li a { display: block; position: absolute; width: 100px; height: 100px; }
+<% @sounds.each do |sound| %>
+#soundboard li#sound-<%= sound[:key] %> a { top: <%= sound[:ypos] %>px; right: <%= sound[:xpos] %>px; }
+<% end %>
+</style>
 <div id="soundboard">
   <ul>
     <% @sounds.each do |sound| %>
       <li id="sound-<%= sound[:key] %>">
-        <a href="http://www.bbc.co.uk<%= sound[:path] %>.mp3" class="play"><%= sound[:title] %></a>
+        <a href="http://www.bbc.co.uk<%= sound[:path] %>.mp3" class="play">
+          <img src="http://www.bbc.co.uk<%= sound[:path] %>.png" alt="<%= sound[:title] %>" />
+        </a>
       </li>
     <% end %>
   </ul>
